@@ -1,35 +1,46 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+import { Menu } from './components/menu';
+import { Productlist } from './components/productlist';
+import data from './data/data.json';
+import { Product } from './types/product';
 
 function App() {
-  const [count, setCount] = useState(0)
+    const MAX_PRICE = 40000;
+    const MIN_PRICE = 0;
+    const [selectedCategory, setselectedCategory] = useState<string>('Alle');
+    const [minPrice, setMinPrice] = useState<number>(MIN_PRICE);
+    const [maxPrice, setMaxPrice] = useState<number>(MAX_PRICE);
+    const [sortOrder, setSortOrder] = useState<string>('asc');
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const uniqueCategories = Array.from(new Set((data as Product[]).map((product) => product.category)));
+    const categories = ['Alle', ...uniqueCategories];
+
+    return (
+        <>
+            <Menu
+                //Holy bananas, this is a lot of props
+                //Would use a context for a lot of these in a real app or a library like jotai or similar
+                selectedCategory={selectedCategory}
+                setSelectedCategory={setselectedCategory}
+                categories={categories}
+                selectedMinPrice={minPrice}
+                selectedMaxPrice={maxPrice}
+                minPrice={MIN_PRICE}
+                maxPrice={MAX_PRICE}
+                setMinPrice={setMinPrice}
+                setMaxPrice={setMaxPrice}
+                sortOrder={sortOrder}
+                setSortOrder={setSortOrder}
+            />
+            <Productlist
+                selectedCategory={selectedCategory}
+                minPrice={minPrice}
+                maxPrice={maxPrice}
+                sortOrder={sortOrder}
+            />
+        </>
+    );
 }
 
-export default App
+export default App;
